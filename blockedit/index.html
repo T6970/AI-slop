@@ -45,9 +45,6 @@
         <block type="text"></block>
         <block type="text_print"></block>
       </category>
-      <category name="JS" colour="#AA00AA">
-        <block type="text_print"></block>
-      </category>
     </xml>
     `
   });
@@ -55,14 +52,19 @@
   function runCode() {
     const code = Blockly.JavaScript.workspaceToCode(workspace);
     const iframe = document.getElementById("output");
-    iframe.srcdoc = `
-      <script>
-        let print = (...msg)=>document.body.innerHTML += msg.join(" ") + "<br>";
-      </script>
-      <script>
-        try { ${code} } catch(e){ document.body.innerHTML += "Error: " + e }
-      </script>
-    `;
+
+    // Build iframe source without backtick conflicts
+    let html = "";
+    html += "<script>";
+    html += "let print = (...msg)=>document.body.innerHTML += msg.join(' ') + '<br>';";
+    html += "</";
+    html += "script>";
+    html += "<script>";
+    html += "try{" + code + "}catch(e){ document.body.innerHTML += 'Error: ' + e }";
+    html += "</";
+    html += "script>";
+
+    iframe.srcdoc = html;
   }
 </script>
 
